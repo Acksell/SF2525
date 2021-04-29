@@ -1,6 +1,7 @@
 
 Ns=100000;
-% Note: Ns/100 is foudn by trial and error.
+% Note: Ns/100 is simply found by trial and error.
+% Note also: Ff0 has support on the interval [1/3, 4/3]
 kspace = linspace(-Ns/100, Ns/100,Ns);
 
 % figure
