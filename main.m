@@ -2,8 +2,8 @@
 
 Ff0_func = @(k) Ff0(k);
 
-
-kspace = linspace(1/3, 4/3, 30);
+Ns=100000;
+kspace = linspace(-Ns/100, Ns/100,Ns);
 % figure
 % plot(arrayfun(@(k) b(abs(k)), kspace)) 
 % hold on
@@ -16,10 +16,10 @@ Ff_0 = arrayfun(Ff0_func, kspace);
 % plot(Ff_0);
 % plot(arrayfun(@(k) mu(k), kspace))
 
-f0 = ifft(Ff_0);
-plot(abs(f0),'-*')
-% plot(real(f0).^2+imag(f0).^2,'*')
-% loglog(real(f0), '*')
+f0 = fftshift(ifft(ifftshift(Ff_0)));
+plot(imag(f0))
 
-
+% hold on
+% plot(imag(f0),'bo-')
+% plot(real(f0),'ro-')
 
