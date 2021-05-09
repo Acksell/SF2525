@@ -1,14 +1,12 @@
 % Simulate the random field v
 
 
-x = -10:.001:10;
+x = -40:.01:40;
 f = (-10.005:.01:10.005);
 Ff0_ = arrayfun(@(f_) Ff0(f_), f);
 f0=real(idftransform(Ff0_, x, f))';
 
 % plot(t,real(f0))
-
-
 
 % Precompute f_m
 
@@ -54,7 +52,7 @@ for i=1:realisations % realization of vy
     [X,Y,vy]=FractalRandomField(fm, x, X, gamma_mn, m_range, n_range);
     vy_matrix(:,i)=vy;
     numer=numer+(vy(3)-vy(1))^4;
-    denom=denom+(vy(3)-vy(1))^2;
+    denom=denom+(vy(3)-vy(1))^2
 %     end
 end
 
@@ -66,7 +64,7 @@ numer/denom
 %%
 sfunc_list=zeros(length(vy),1);
 sfunc_list_real=zeros(length(vy),1);
-for pos=2:length(vy)
+for pos=2:length(vy)-1
     sfunc=0;
     for i=1:realisations
         sfunc=sfunc+(vy_matrix(pos,i)-vy_matrix(1,i))^2;
