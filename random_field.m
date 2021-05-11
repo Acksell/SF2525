@@ -38,7 +38,7 @@ numer=0
 
 
 
-realisations=2000;
+realisations=5000;
 
 X=logspace(log10(2^min(m_range)),log10(2^max(m_range)));
 vy_matrix=zeros(length(X),realisations);
@@ -61,29 +61,56 @@ denom=(denom/realisations)^2;
 numer/denom
 
 %%
-sfunc_list=zeros(length(vy),1);
-sfunc_list_real=zeros(length(vy),1);
-for pos=2:length(vy)-1
+% semilogx(X,vy_matrix(:,1:500:end))
+
+%%
+viable_points=2:length(vy); % dont include first point because 0/0 -> NaN.
+
+sfunc_list=zeros(length(viable_points),1);
+sfunc_list_real=zeros(length(viable_points),1);
+kurtosis_list=zeros(length(viable_points),1);
+
+Xspace_to_plot=X(viable_points);
+for pos=1:length(viable_points)
     sfunc=0;
+    numer=0;
+    denom=0;
     for i=1:realisations
-        sfunc=sfunc+(vy_matrix(pos,i)-vy_matrix(1,i))^2;
+        sfunc=sfunc+(vy_matrix(viable_points(pos),i)-vy_matrix(1,i))^2;
+
+        numer=numer+(vy_matrix(viable_points(pos),i)-vy_matrix(1,i))^4;
+        denom=denom+(vy_matrix(viable_points(pos),i)-vy_matrix(1,i))^2;
     end
+    numer=numer/realisations;
+    denom=(denom/realisations)^2;
     sfunc_list(pos)=sfunc/realisations;
     sfunc_list_real(pos)=2^(8/3)*pi^(5/3)*X(pos)^(2/3)/(sqrt(3)*gamma(5/3));
+    kurtosis_list(pos)=numer/denom;
 end
-figure
-loglog(X,sfunc_list,'x-')
-hold on
-loglog(X,sfunc_list_real)
-legend(["Calculated structure", "Analytic structure"],'Location','nw')
-figure
-semilogx(X,sfunc_list./sfunc_list_real)
-% structureFunc
-% realStructureFunc=2^(8/3)*pi^(5/3)*X(3)^(2/3)/(sqrt(3)*gamma(5/3))
 
+figure
+loglog(Xspace_to_plot,sfunc_list,'x-')
+hold on
+loglog(Xspace_to_plot, sfunc_list_real)
+legend(["Calculated structure", "Analytic structure"],'Location','nw')
+xlabel("x",'FontSize',13)
+ylabel("Structure function",'FontSize',13)
+
+figure
+semilogx(Xspace_to_plot, sfunc_list./sfunc_list_real,'x-')
+xlabel("x",'FontSize',13)
+ylabel("Ratio",'FontSize',13)
+
+figure
+semilogx(Xspace_to_plot,kurtosis_list,'x-')
+hold on
+semilogx(Xspace_to_plot,arrayfun(@(k) 3, Xspace_to_plot))
+legend(["Calculated kurtosis", "Analytic kurtosis"],'Location','nw')
+xlabel("x",'FontSize',13)
+ylabel("Kurtosis",'FontSize',13)
 
 function [X,Y,vy]=FractalRandomField(fm, x, X, gamma, m_range, n_range)
-    
+
 %     w=0.5; % make sure that w*Tmax < 2^mmax
 %     X=w*t;
     vy=zeros(1,length(X));
