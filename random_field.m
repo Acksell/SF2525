@@ -31,7 +31,6 @@ end
 % plot(fm)
 
 
-
 %% Monte Carlo
 
 denom=0
@@ -89,12 +88,18 @@ function [X,Y,vy]=FractalRandomField(fm, x, X, gamma, m_range, n_range)
 %     X=w*t;
     vy=zeros(1,length(X));
 
+    
     for m=1:length(m_range)
+        arglist=zeros(length(n_range),length(X));
         for n=1:length(n_range)
-            arg=2^(-m_range(m))*X - floor(2^(-m_range(m))*X) - n_range(n);
-            vy = vy + gamma(m,n)*interp1(x, fm(:,m), arg);
+            arglist(n,:)=2^(-m_range(m))*X - floor(2^(-m_range(m))*X) - n_range(n);
+        end
+        interp_n=interp1(x, fm(:,m), arglist);
+        for n=1:length(n_range)
+            vy=vy+gamma(m,n)*interp_n(n,:);
         end
     end
+
 
     % Use trapezoidal to integrate v(X) over time.
     Y=zeros(1,length(X));
