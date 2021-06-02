@@ -84,30 +84,34 @@ for pos=1:length(viable_points)
     numer=numer/realisations;
     denom=(denom/realisations)^2;
     sfunc_list(pos)=sfunc/realisations;
-    sfunc_list_real(pos)=2^(8/3)*pi^(5/3)*X(pos)^(2/3)/(sqrt(3)*gamma(5/3));
+    sfunc_list_real(pos)=2^(8/3)*pi^(5/3)*X(viable_points(pos))^(2/3)/(sqrt(3)*gamma(5/3));
     kurtosis_list(pos)=numer/denom;
 end
 
 figure
+subplot(1,2,1)
+fontsize=20;
+set(gca,'FontSize',20)
 loglog(Xspace_to_plot,sfunc_list,'x-')
 hold on
 loglog(Xspace_to_plot, sfunc_list_real)
-legend(["Calculated structure", "Analytic structure"],'Location','nw')
-xlabel("x",'FontSize',13)
-ylabel("Structure function",'FontSize',13)
-
-figure
+legend(["Calculated structure", "Analytic structure"],'Location','nw','FontSize',15)
+xlabel("x",'FontSize',fontsize)
+ylabel("Structure function",'FontSize',fontsize)
+subplot(1,2,2)
 semilogx(Xspace_to_plot, sfunc_list./sfunc_list_real,'x-')
-xlabel("x",'FontSize',13)
-ylabel("Ratio",'FontSize',13)
+hold on
+semilogx(Xspace_to_plot, arrayfun(@(k) 1, Xspace_to_plot))
+xlabel("x",'FontSize',fontsize)
+ylabel("Ratio",'FontSize',fontsize)
 
 figure
 semilogx(Xspace_to_plot,kurtosis_list,'x-')
 hold on
 semilogx(Xspace_to_plot,arrayfun(@(k) 3, Xspace_to_plot))
-legend(["Calculated kurtosis", "Analytic kurtosis"],'Location','nw')
-xlabel("x",'FontSize',13)
-ylabel("Kurtosis",'FontSize',13)
+legend(["Calculated kurtosis", "Analytic kurtosis"],'Location','ne','FontSize',15)
+xlabel("x",'FontSize',fontsize)
+ylabel("Kurtosis",'FontSize',fontsize)
 
 function [X,Y,vy]=FractalRandomField(fm, x, X, gamma, m_range, n_range)
 
